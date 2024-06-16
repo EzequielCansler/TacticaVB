@@ -4,6 +4,10 @@ Imports DAL.DAL
 
 Namespace BLL
     Public Class ventasBLL
+        Public Function Listar() As List(Of Venta)
+            Dim ventasDAL As New VentasDAL()
+            Return ventasDAL.Listar()
+        End Function
         Public Function AgregarVenta(items As List(Of VentaItem), clienteId As Integer) As Boolean
             Try
                 Dim Fecha = DateTime.Now

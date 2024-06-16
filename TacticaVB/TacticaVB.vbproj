@@ -219,6 +219,7 @@
     <Content Include="Views\Producto\Index.vbhtml" />
     <Content Include="Views\Producto\ProductoCambioNuevo.vbhtml" />
     <Content Include="Views\Venta\Index.vbhtml" />
+    <Content Include="Views\Venta\AgregarVenta.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

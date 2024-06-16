@@ -12,12 +12,25 @@ Namespace Controllers
 
         ' GET: Venta
         Function Index() As ActionResult
+            Dim ventasBLL As New ventasBLL()
+            Dim ventasitemBLL As New ventasitemsBLL()
+            Dim clientesBLL As New ClientesBLL()
+
+            Dim clientes = clientesBLL.ListarClientes()
+            Dim ventaItem = ventasitemBLL.ListarItems()
+            Dim ventas = ventasBLL.Listar()
+
+            ViewBag.Clientes = clientes
+            ViewBag.VentaItem = ventaItem
+            Return View(ventas)
+        End Function
+
+        Function AgregarVenta() As ActionResult
             Dim productosBLL As New ProductosBLL()
             Dim productos = productosBLL.ListarProductos()
             Dim clientesBLL As New ClientesBLL()
             Dim clientes = clientesBLL.ListarClientes()
 
-            ' Verifica que la lista de clientes no es null
             If clientes Is Nothing Then
                 clientes = New List(Of Cliente)()
             End If

@@ -64,6 +64,7 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ventaItemDAL.vb" />
     <Compile Include="VentasDAL.vb" />
     <Compile Include="productosDAL.vb" />
     <Compile Include="SqlDBHelper.vb" />

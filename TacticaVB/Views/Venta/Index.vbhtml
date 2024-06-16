@@ -1,106 +1,54 @@
-﻿@Imports Newtonsoft.Json
-@Imports Entidades.Entidades
-@ModelType List(Of Producto)
+﻿@Imports Entidades.Entidades
+@ModelType List(Of Venta)
 
 @Code
-    ViewData("Title") = "Crear Venta"
+    ViewData("Title") = "Ventas"
     Layout = "~/Views/Shared/_Layout.vbhtml"
 End Code
 
-<h2>Crear Venta</h2>
+<h2>Ventas Existentes</h2>
 
-<form id="ventaForm" action="@Url.Action("CrearVenta", "Venta")" method="post">
-    <input hidden id="Venta-Item" name="VentaItem" />
-    <div class="form-group">
-        <label for="clienteID">Cliente</label>
-        <select id="clienteID" name="clienteID" class="form-control" required>
-            <option value="" disabled selected>Seleccione un cliente</option>
-            @If ViewBag.Clientes IsNot Nothing Then
-                @For Each cliente As Cliente In ViewBag.Clientes
-                    @<option value="@cliente.ID">@cliente.NombreCliente</option>Next
-            End If
-        </select>
-    </div>
-
-    <h3>Productos</h3>
-    <div id="productosContainer">
-        <div class="form-group">
-            <label for="productoID">Producto</label>
-            <select id="productoID" class="form-control">
-                @For Each producto As Producto In Model
-                    @<option value="@producto.ID">@producto.NombreProducto</option>
-                Next
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="cantidad">Cantidad</label>
-            <input type="number" id="cantidad" class="form-control" placeholder="Ingrese la cantidad"  />
-        </div>
-        <button type="button" id="addProducto" class="btn btn-primary">Agregar Producto</button>
-    </div>
-
-    <h3>Productos Seleccionados</h3>
-    <table id="productosSeleccionados" class="table">
-        <thead>
-            <tr>
-                <th>Producto ID</th>
-                <th>Nombre Producto</th>
-                <th>Cantidad</th>
-                <th>Acción</th>
+<table id="example" class="table table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>Cliente</th>
+            <th>Cantidad</th>
+            <th>Fecha</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @For Each venta As Venta In Model
+            @<tr>
+                <td>
+                    @If ViewBag.Clientes IsNot Nothing Then
+                        @For Each cliente In ViewBag.Clientes
+                            @If cliente.ID = venta.IDCliente Then
+                                @<span>@cliente.NombreCliente</span>
+                            End If
+                        Next
+                    End If
+                </td>
+                <td>
+                    @If ViewBag.VentaItem IsNot Nothing Then
+                        @For Each item In ViewBag.VentaItem
+                            @If item.IDVenta = venta.ID Then
+                                @<span>@item.Cantidad</span>
+                            End If
+                        Next
+                    End If
+                </td>
+                <td>@venta.Fecha.ToShortDateString()</td>
+                <td>@venta.Total</td>
+                @Using Html.BeginForm("AgregarVenta", "Venta", New With {.id = venta.ID}, FormMethod.Post)
+                    @<td><button type="submit" class="btn btn-primary">Modificar Venta</button></td>
+                End Using
+                @Using Html.BeginForm("Eliminar", "Venta", New With {.id = venta.ID}, FormMethod.Post)
+                    @<td><button type="submit" class="btn btn-primary">Eliminar Venta</button></td>
+                End Using
             </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+        Next
+    </tbody>
+</table>
 
-    <button type="submit" id="submitVenta" class="btn btn-success">Crear Venta</button>
-</form>
-@*ToDo sacar los alerts y console.log*@
-@section Scripts
-    {
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            var productos = [];
-
-            $('#addProducto').click(function () {
-                var productoID = $('#productoID').val();
-                var cantidad = $('#cantidad').val();
-                var productoNombre = $('#productoID option:selected').text();
-
-                if (productoID && cantidad > 0) {
-                    // Agregar el producto al arreglo de productos
-                    productos.push({ ProductoID: productoID, Cantidad: cantidad });
-
-                    // Mostrar el producto en la tabla de productos seleccionados
-                    $('#productosSeleccionados tbody').append('<tr><td>' + productoID + '</td><td>' + productoNombre + '</td><td>' + cantidad + '</td><td><button type="button" class="btn btn-danger removeProducto">Eliminar</button></td></tr>');
-
-                    // Limpiar los campos de selección de producto y cantidad
-                    $('#productoID').val('');
-                    $('#cantidad').val('');
-                }
-            });
-
-            $(document).on('click', '.removeProducto', function () {
-                var row = $(this).closest('tr');
-                var productoID = row.find('td:first').text();
-
-                // Eliminar el producto del arreglo de productos
-                productos = productos.filter(function (p) {
-                    return p.ProductoID !== productoID;
-                });
-
-                // Eliminar la fila de la tabla de productos seleccionados
-                row.remove();
-            });
-
-            $('#submitVenta').click(function () {
-                var clienteID = $('#clienteID').val();
-                $('#Venta-Item').val(JSON.stringify(productos))
-                
-            });
-        });
-    </script>
-    }
-
-End Section
+<a href="@Url.Action("AgregarVenta", "Venta")" class="btn btn-primary">Agregar Venta</a>
