@@ -34,5 +34,15 @@ Namespace DAL
             strConexion.Close()
             Return Tabla
         End Function
+        Public Function EjecutarEscalar(ByVal strSQLCommand As SqlCommand) As Object
+            ' Ejecutar comando y devolver resultado escalar
+            Dim result As Object = Nothing
+            cmd = strSQLCommand
+            cmd.Connection = strConexion
+            strConexion.Open()
+            result = cmd.ExecuteScalar()
+            strConexion.Close()
+            Return result
+        End Function
     End Class
 End Namespace

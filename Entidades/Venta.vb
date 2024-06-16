@@ -3,6 +3,7 @@
         Public Sub New()
             ' Constructor vacío
         End Sub
+
         Public Sub New(row As DataRow)
             ID = Convert.ToInt32(row("ID"))
             IDCliente = Convert.ToInt32(row("IDCliente"))

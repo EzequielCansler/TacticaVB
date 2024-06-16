@@ -21,6 +21,7 @@
         Public Property PrecioTotal As Double
 
 
+
     End Class
 
 End Namespace
