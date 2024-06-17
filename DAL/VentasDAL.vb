@@ -112,5 +112,55 @@ Namespace DAL
             End If
         End Function
 
+
+        Public Function EliminarVenta(ID As Integer) As Boolean
+                Try
+                Dim cmdComando As New SqlCommand()
+
+                cmdComando.CommandText = "DELETE FROM ventasitems WHERE IDVenta = @IDVenta"
+                cmdComando.CommandType = CommandType.Text
+                cmdComando.Parameters.AddWithValue("@IDVenta", ID)
+                oConexion.EjecutarComandoSQL(cmdComando)
+
+
+
+                cmdComando.CommandText = "DELETE FROM ventas WHERE ID = @ID"
+                cmdComando.CommandType = CommandType.Text
+                cmdComando.Parameters.AddWithValue("@ID", ID)
+                oConexion.EjecutarComandoSQL(cmdComando)
+
+
+
+                Return True
+                Catch ex As Exception
+
+                    Return False
+                End Try
+            End Function
+
+        Public Function BuscarVentaPorNombreDeCliente(nombre As String) As List(Of Venta)
+            Dim ventas As New List(Of Venta)()
+            Dim cmdComando As New SqlCommand()
+            cmdComando.CommandText = "
+            SELECT v.*, c.Cliente As NombreCliente
+            FROM ventas v
+            INNER JOIN clientes c ON v.IDCliente = c.ID
+            WHERE c.Cliente LIKE '%' + @nombre + '%'"
+            cmdComando.CommandType = CommandType.Text
+            cmdComando.Parameters.AddWithValue("@nombre", nombre)
+
+            Dim TablaResultante As DataTable = oConexion.EjecutarSentenciaSQL(cmdComando)
+            For Each fila As DataRow In TablaResultante.Rows
+                Dim venta As New Venta(fila)
+                venta.Items = ItemDetallePorVentaID(venta.ID)
+                ventas.Add(venta)
+            Next
+
+            Return ventas
+
+        End Function
+
+
+
     End Class
 End Namespace

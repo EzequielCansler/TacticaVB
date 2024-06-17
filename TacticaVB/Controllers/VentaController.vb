@@ -11,12 +11,16 @@ Namespace Controllers
         Inherits Controller
 
         ' GET: Venta
-        Function Index() As ActionResult
+        Function Index(Optional nombre As String = "") As ActionResult
             Dim ventasBLL As New ventasBLL()
             Dim clientesBLL As New ClientesBLL()
-
+            Dim Ventas As List(Of Venta)
             Dim clientes = clientesBLL.ListarClientes()
-            Dim ventas = ventasBLL.Listar()
+            If String.IsNullOrEmpty(nombre) Then
+                ventas = ventasBLL.Listar()
+            Else
+                ventas = ventasBLL.BuscarPorCliente(nombre)
+            End If
 
             ViewBag.Clientes = clientes
             Return View(ventas)
@@ -63,6 +67,12 @@ Namespace Controllers
             Catch ex As Exception
                 Return RedirectToAction("Index")
             End Try
+        End Function
+        Public Function EliminarVenta(id As Integer) As ActionResult
+            Dim ventaBLL As New ventasBLL()
+            ventaBLL.Eliminar(id)
+
+            Return RedirectToAction("Index")
         End Function
     End Class
 End Namespace

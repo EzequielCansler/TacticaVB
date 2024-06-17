@@ -57,6 +57,17 @@ Namespace BLL
             venta.Items = ventaDAL.ItemDetallePorVentaID(id)
             Return venta
         End Function
+        Public Function Eliminar(id As Integer) As Boolean
+            Dim ventaDAL As New VentasDAL()
+            Dim exito = ventaDAL.EliminarVenta(id)
+
+            Return exito
+        End Function
+        Public Function BuscarPorCliente(nombre As String) As List(Of Venta)
+            Dim ventaDAL As New VentasDAL()
+            Return ventaDAL.BuscarVentaPorNombreDeCliente(nombre)
+        End Function
+
     End Class
 End Namespace
 

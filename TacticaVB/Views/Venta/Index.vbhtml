@@ -7,6 +7,12 @@
 End Code
 
 <h2>Ventas Existentes</h2>
+@Using Html.BeginForm("Index", "Venta", FormMethod.Get)
+    @<div class="form-group">
+        <Label for="nombre">Nombre</Label>
+        <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingrese el nombre del cliente" value="@Request("nombre")" />
+    </div>
+    @<Button type="submit" class="btn btn-primary">Buscar</Button>End Using
 
 <table id="example" class="table table-striped" style="width:100%">
     <thead>
@@ -29,15 +35,15 @@ End Code
                         Next
                     End If
                 </td>
-                <td>                   
-                        <span>@venta.CantidadTotal</span>                  
+                <td>
+                    <span>@venta.CantidadTotal</span>
                 </td>
                 <td>@venta.Fecha.ToShortDateString()</td>
                 <td>@venta.Total</td>
                 @Using Html.BeginForm("AgregarVenta", "Venta", New With {.id = venta.ID}, FormMethod.Post)
                     @<td><button type="submit" class="btn btn-primary">Modificar Venta</button></td>
                 End Using
-                @Using Html.BeginForm("Eliminar", "Venta", New With {.id = venta.ID}, FormMethod.Post)
+                @Using Html.BeginForm("EliminarVenta", "Venta", New With {.id = venta.ID}, FormMethod.Post)
                     @<td><button type="submit" class="btn btn-primary">Eliminar Venta</button></td>
                 End Using
             </tr>

@@ -5,6 +5,6 @@ End Code
 <a href="@Url.Action("Index", "Cliente")" class="btn btn-primary">Clientes</a>
 <a href="@Url.Action("Index", "Producto")" class="btn btn-primary">Productos</a>
 <a href="@Url.Action("Index", "Venta")" class="btn btn-primary">Ventas</a>
-<a href="@Url.Action("AgregarVenta", "Venta")" class="btn btn-primary">Agregar Venta</a>
+
 
 
