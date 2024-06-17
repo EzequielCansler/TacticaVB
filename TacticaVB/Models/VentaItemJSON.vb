@@ -6,5 +6,7 @@ Public Class VentaItemJSON
 
     Public Property Cantidad As Integer
 
-    End Class
+    Public Property Id As Integer
+
+End Class
 

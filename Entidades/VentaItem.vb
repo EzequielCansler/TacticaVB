@@ -16,6 +16,7 @@
         Public Property ID As Integer
         Public Property IDVenta As Integer
         Public Property IDProducto As Integer
+        Public Property NombreProducto As String
         Public Property PrecioUnitario As Double
         Public Property Cantidad As Integer
         Public Property PrecioTotal As Double

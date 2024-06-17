@@ -6,9 +6,21 @@ Namespace BLL
     Public Class ventasBLL
         Public Function Listar() As List(Of Venta)
             Dim ventasDAL As New VentasDAL()
-            Return ventasDAL.Listar()
+            Dim ventas = ventasDAL.Listar()
+            For Each venta In ventas
+                Dim sumaTotal = 0
+                Dim SumaCantidad = 0
+                For Each item In venta.Items
+                    sumaTotal += item.PrecioUnitario
+                    SumaCantidad += item.Cantidad
+
+                Next
+                venta.Total = sumaTotal
+                venta.CantidadTotal = SumaCantidad
+            Next
+            Return ventas
         End Function
-        Public Function AgregarVenta(items As List(Of VentaItem), clienteId As Integer) As Boolean
+        Public Function AgregarVenta(items As List(Of VentaItem), clienteId As Integer, ID As Integer?) As Boolean
             Try
                 Dim Fecha = DateTime.Now
                 Dim PrecioTotal As Double = 0
@@ -28,15 +40,22 @@ Namespace BLL
                     End If
 
                 Next
-                ventasDAL.AgregarVenta(items, Fecha, PrecioTotal, clienteId)
+                Dim Resultado As Boolean = ventasDAL.AgregarVenta(items, Fecha, PrecioTotal, clienteId, ID)
 
-                'Return ventasDAL.AgregarVenta()
 
+                Return Resultado
 
             Catch ex As Exception
 
                 Return False
             End Try
+        End Function
+
+        Public Function BuscarPorID(id As Integer) As Venta
+            Dim ventaDAL As New VentasDAL()
+            Dim venta = ventaDAL.BuscarID(id)
+            venta.Items = ventaDAL.ItemDetallePorVentaID(id)
+            Return venta
         End Function
     End Class
 End Namespace

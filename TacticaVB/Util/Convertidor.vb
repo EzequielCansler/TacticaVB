@@ -4,7 +4,8 @@ Namespace Util
         Public Shared Function ConvertirAVentaItem(ventaItemJSON As VentaItemJSON) As Entidades.Entidades.VentaItem
             Return New Entidades.Entidades.VentaItem() With {
                 .IDProducto = ventaItemJSON.ProductoID,
-                .Cantidad = ventaItemJSON.Cantidad
+                .Cantidad = ventaItemJSON.Cantidad,
+                .ID = ventaItemJSON.Id
             }
         End Function
     End Class

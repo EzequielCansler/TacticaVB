@@ -1,27 +1,24 @@
 ﻿@Imports Newtonsoft.Json
 @Imports Entidades.Entidades
-@ModelType List(Of Producto)
+@ModelType Venta
 
 @Code
     ViewData("Title") = "Crear Venta"
     Layout = "~/Views/Shared/_Layout.vbhtml"
 End Code
 
-
-
 <h2>Crear Venta</h2>
 
 <form id="ventaForm" action="@Url.Action("CrearVenta", "Venta")" method="post">
     <input hidden id="Venta-Item" name="VentaItem" />
+    <input hidden id="Venta-id" name="VentaId" value="@Model.ID" />
+
     <div class="form-group">
         <label for="clienteID">Cliente</label>
-        <select id="clienteID" name="clienteID" class="form-control" required>
-            <option value="" disabled selected>Seleccione un cliente</option>
-            @If ViewBag.Clientes IsNot Nothing Then
-                @For Each cliente As Cliente In ViewBag.Clientes
-                    @<option value="@cliente.ID">@cliente.NombreCliente</option>Next
-            End If
-        </select>
+
+        @Html.DropDownListFor(Function(m) m.IDCliente, New SelectList(DirectCast(ViewBag.Clientes, List(Of Cliente)), "Id", "NombreCliente"), "Selecciona una opción", New With {.id = "clienteID", .name = "clienteID", .class = "form-control"})
+
+
     </div>
 
     <h3>Productos</h3>
@@ -29,7 +26,7 @@ End Code
         <div class="form-group">
             <label for="productoID">Producto</label>
             <select id="productoID" class="form-control">
-                @For Each producto As Producto In Model
+                @For Each producto As Producto In ViewBag.Productos
                     @<option value="@producto.ID">@producto.NombreProducto</option>
                 Next
             </select>
@@ -52,12 +49,24 @@ End Code
             </tr>
         </thead>
         <tbody>
+
+            @For Each item As VentaItem In Model.Items
+                @<tr>
+                    <td>@item.IDProducto</td>
+                    <td>@item.NombreProducto</td>
+                    <td>@item.Cantidad</td>
+                    <td>
+                        <button type="button" class="btn btn-danger removeProducto" data-id="@item.ID">Eliminar</button>
+                    </td>
+                </tr>
+            Next
+
         </tbody>
     </table>
 
     <button type="submit" id="submitVenta" class="btn btn-success">Crear Venta</button>
 </form>
-@*ToDo sacar los alerts y console.log*@
+
 @section Scripts
     {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -72,7 +81,7 @@ End Code
 
                 if (productoID && cantidad > 0) {
                     // Agregar el producto al arreglo de productos
-                    productos.push({ ProductoID: productoID, Cantidad: cantidad });
+                    productos.push({ ProductoID: productoID, Cantidad: cantidad, Id: 0});
 
                     // Mostrar el producto en la tabla de productos seleccionados
                     $('#productosSeleccionados tbody').append('<tr><td>' + productoID + '</td><td>' + productoNombre + '</td><td>' + cantidad + '</td><td><button type="button" class="btn btn-danger removeProducto">Eliminar</button></td></tr>');
@@ -86,20 +95,19 @@ End Code
             $(document).on('click', '.removeProducto', function () {
                 var row = $(this).closest('tr');
                 var productoID = row.find('td:first').text();
+                var Id = String($(this).data('id'));
 
-                // Eliminar el producto del arreglo de productos
-                productos = productos.filter(function (p) {
-                    return p.ProductoID !== productoID;
-                });
+             
+                productos.push({ ProductoID: productoID, Cantidad: 0, Id: Id });
 
                 // Eliminar la fila de la tabla de productos seleccionados
                 row.remove();
             });
 
-            $('#submitVenta').click(function () {
+            $('#ventaForm').submit(function () {
                 var clienteID = $('#clienteID').val();
-                $('#Venta-Item').val(JSON.stringify(productos))
-
+                
+                $('#Venta-Item').val(JSON.stringify(productos));
             });
         });
     </script>

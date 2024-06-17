@@ -15,6 +15,8 @@
         Public Property IDCliente As Integer
         Public Property Fecha As Date
         Public Property Total As Double
+        Public Property Items As List(Of VentaItem) = New List(Of VentaItem)
+        Public Property CantidadTotal As Integer
     End Class
 
 End Namespace

@@ -29,14 +29,8 @@ End Code
                         Next
                     End If
                 </td>
-                <td>
-                    @If ViewBag.VentaItem IsNot Nothing Then
-                        @For Each item In ViewBag.VentaItem
-                            @If item.IDVenta = venta.ID Then
-                                @<span>@item.Cantidad</span>
-                            End If
-                        Next
-                    End If
+                <td>                   
+                        <span>@venta.CantidadTotal</span>                  
                 </td>
                 <td>@venta.Fecha.ToShortDateString()</td>
                 <td>@venta.Total</td>

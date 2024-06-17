@@ -19,39 +19,50 @@ Namespace DAL
 
             Dim TablaResultante As DataTable = oConexion.EjecutarSentenciaSQL(cmdComando)
             For Each fila As DataRow In TablaResultante.Rows
-                ventas.Add(New Venta(fila))
+                Dim venta = New Venta(fila)
+                venta.Items = ItemDetallePorVentaID(venta.ID)
+                ventas.Add(venta)
             Next
 
             Return ventas
         End Function
 
-        Public Function AgregarVenta(items As List(Of VentaItem), Fecha As Date, precioTotal As Double, clienteId As Integer) As Boolean
+        Public Function AgregarVenta(items As List(Of VentaItem), Fecha As Date, precioTotal As Double, clienteId As Integer, ID As Integer?) As Boolean
             Try
 
                 Dim cmdComando As New SqlCommand()
-
-
-                cmdComando.CommandText = "INSERT INTO ventas (IDCliente, Fecha, Total) VALUES (@IDCliente, @Fecha, @Total); SELECT SCOPE_IDENTITY();"
-                cmdComando.CommandType = CommandType.Text
-
+                If ID IsNot Nothing Then 'si tiene valor se modifica
+                    cmdComando.CommandText = "UPDATE ventas SET Fecha = @Fecha, Total = @Total, IDCliente = @IDCliente WHERE ID = @ID; SELECT @ID"
+                    cmdComando.Parameters.AddWithValue("@ID", ID.Value)
+                Else 'sino se crea
+                    cmdComando.CommandText = "INSERT INTO ventas (IDCliente, Fecha, Total) VALUES (@IDCliente, @Fecha, @Total); SELECT SCOPE_IDENTITY();"
+                End If
                 cmdComando.Parameters.AddWithValue("@IDCliente", clienteId)
+
                 cmdComando.Parameters.AddWithValue("@Fecha", Fecha)
                 cmdComando.Parameters.AddWithValue("@Total", precioTotal)
+                cmdComando.CommandType = CommandType.Text
 
+                'Dim ventaID As Integer = Convert.ToInt32(oConexion.EjecutarEscalar(cmdComando))
                 Dim ventaID As Integer = Convert.ToInt32(oConexion.EjecutarEscalar(cmdComando))
 
                 For Each item As VentaItem In items
-                    cmdComando.CommandText = "INSERT INTO ventasitems (IDVenta, IDProducto, PrecioUnitario, Cantidad, PrecioTotal) VALUES (@IDVenta, @IDProducto, @PrecioUnitario, @Cantidad, @PrecioTotal);"
                     cmdComando.Parameters.Clear()
-
                     cmdComando.CommandType = CommandType.Text
-                    cmdComando.Parameters.AddWithValue("@IDVenta", ventaID)
-                    cmdComando.Parameters.AddWithValue("@IDProducto", item.IDProducto)
-                    cmdComando.Parameters.AddWithValue("@PrecioUnitario", item.PrecioUnitario)
-                    cmdComando.Parameters.AddWithValue("@Cantidad", item.Cantidad)
-                    cmdComando.Parameters.AddWithValue("@PrecioTotal", item.PrecioTotal)
 
+                    If item.ID > 0 Then
+                        cmdComando.CommandText = "DELETE ventasitems WHERE ID = @ID;"
+                        cmdComando.Parameters.AddWithValue("@ID", item.ID)
 
+                    Else
+                        cmdComando.CommandText = "INSERT INTO ventasitems (IDVenta, IDProducto, PrecioUnitario, Cantidad, PrecioTotal) VALUES (@IDVenta, @IDProducto, @PrecioUnitario, @Cantidad, @PrecioTotal);"
+                        cmdComando.Parameters.AddWithValue("@IDVenta", ventaID)
+                        cmdComando.Parameters.AddWithValue("@IDProducto", item.IDProducto)
+                        cmdComando.Parameters.AddWithValue("@PrecioUnitario", item.PrecioUnitario)
+                        cmdComando.Parameters.AddWithValue("@Cantidad", item.Cantidad)
+                        cmdComando.Parameters.AddWithValue("@PrecioTotal", item.PrecioTotal)
+
+                    End If
                     oConexion.EjecutarComandoSQL(cmdComando)
                 Next
 
@@ -59,9 +70,46 @@ Namespace DAL
                 Return True
 
             Catch ex As Exception
-                ' Manejo de excepciones: podrías registrar el error en un archivo de registro
+
                 Return False
             End Try
+        End Function
+        Public Function ItemDetallePorVentaID(ventaID As Integer) As List(Of VentaItem)
+            Dim ventaItems As New List(Of VentaItem)
+
+            Dim cmdComando As New SqlCommand()
+
+            cmdComando.CommandText = "
+        SELECT  Vi.*, p.Nombre              
+        FROM ventasitems vi
+        INNER JOIN productos p on p.ID = Vi.IDProducto
+        WHERE vi.IDVenta =  @VentaID"
+            cmdComando.CommandType = CommandType.Text
+            cmdComando.Parameters.AddWithValue("@VentaID", ventaID)
+
+            Dim TablaResultante As DataTable = oConexion.EjecutarSentenciaSQL(cmdComando)
+            For Each fila As DataRow In TablaResultante.Rows
+                Dim ventaItem = New VentaItem(fila)
+                ventaItem.NombreProducto = fila("Nombre")
+                ventaItems.Add(ventaItem)
+
+            Next
+
+            Return ventaItems
+        End Function
+
+
+        Public Function BuscarID(id As Integer) As Venta
+            Dim cmdComando As New SqlCommand()
+            cmdComando.CommandText = "SELECT * FROM ventas WHERE ID = @ID"
+            cmdComando.CommandType = CommandType.Text
+            cmdComando.Parameters.AddWithValue("@ID", id)
+            Dim TablaResultante As DataTable = oConexion.EjecutarSentenciaSQL(cmdComando)
+            If TablaResultante.Rows.Count > 0 Then
+                Return New Venta(TablaResultante.Rows(0))
+            Else
+                Return Nothing
+            End If
         End Function
 
     End Class

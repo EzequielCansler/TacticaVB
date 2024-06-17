@@ -13,33 +13,41 @@ Namespace Controllers
         ' GET: Venta
         Function Index() As ActionResult
             Dim ventasBLL As New ventasBLL()
-            Dim ventasitemBLL As New ventasitemsBLL()
             Dim clientesBLL As New ClientesBLL()
 
             Dim clientes = clientesBLL.ListarClientes()
-            Dim ventaItem = ventasitemBLL.ListarItems()
             Dim ventas = ventasBLL.Listar()
 
             ViewBag.Clientes = clientes
-            ViewBag.VentaItem = ventaItem
             Return View(ventas)
         End Function
 
-        Function AgregarVenta() As ActionResult
+        Function AgregarVenta(Optional id As Integer? = Nothing) As ActionResult
             Dim productosBLL As New ProductosBLL()
             Dim productos = productosBLL.ListarProductos()
+
             Dim clientesBLL As New ClientesBLL()
             Dim clientes = clientesBLL.ListarClientes()
 
-            If clientes Is Nothing Then
-                clientes = New List(Of Cliente)()
+            Dim ventasBLL As New ventasBLL()
+            Dim ItemDetalle As ItemDetalle = Nothing
+            Dim venta As New Venta()
+
+            If id.HasValue Then
+
+                venta = ventasBLL.BuscarPorID(id.Value)
+                If venta Is Nothing Then
+                    ViewBag.Message = "Cliente no encontrado."
+                End If
             End If
 
+
+            ViewBag.Productos = productos
             ViewBag.Clientes = clientes
-            Return View(productos)
+            Return View(venta)
         End Function
         <HttpPost>
-        Public Function CrearVenta(VentaItem As String, clienteID As Integer) As ActionResult
+        Public Function CrearVenta(VentaItem As String, IDCliente As Integer, Optional VentaId As Integer? = Nothing) As ActionResult
             Try
                 Dim productos As List(Of VentaItemJSON) = JsonConvert.DeserializeObject(Of List(Of VentaItemJSON))(VentaItem)
                 Dim bll As New ventasBLL()
@@ -48,7 +56,7 @@ Namespace Controllers
                     itemsVenta.Add(Convertidor.ConvertirAVentaItem(itemJSON)) 'cambio de VentaItemJSON a VentaItem
 
                 Next
-                Dim resultado As Boolean = bll.AgregarVenta(itemsVenta, clienteID)
+                Dim resultado As Boolean = bll.AgregarVenta(itemsVenta, IDCliente, VentaId)
 
 
                 Return RedirectToAction("Index")
