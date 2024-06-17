@@ -29,8 +29,8 @@ Namespace Controllers
             Dim ventasBLL As New ventasBLL()
             Dim clientesBLL As New ClientesBLL()
 
-            Dim clientes = clientesBLL.BuscarClientePorID(id)
             Dim venta = ventasBLL.BuscarPorID(id)
+            Dim clientes = clientesBLL.BuscarClientePorID(venta.IDCliente)
 
             ViewBag.Clientes = clientes
             Return View(venta)

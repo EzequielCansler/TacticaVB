@@ -151,7 +151,7 @@ Namespace DAL
 
             Dim TablaResultante As DataTable = oConexion.EjecutarSentenciaSQL(cmdComando)
             For Each fila As DataRow In TablaResultante.Rows
-                Dim venta As New Venta(fila)
+                Dim venta = New Venta(fila)
                 venta.Items = ItemDetallePorVentaID(venta.ID)
                 ventas.Add(venta)
             Next

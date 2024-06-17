@@ -65,7 +65,19 @@ Namespace BLL
         End Function
         Public Function BuscarPorCliente(nombre As String) As List(Of Venta)
             Dim ventaDAL As New VentasDAL()
-            Return ventaDAL.BuscarVentaPorNombreDeCliente(nombre)
+            Dim ventas = ventaDAL.BuscarVentaPorNombreDeCliente(nombre)
+            For Each venta In ventas
+                Dim sumaTotal = 0
+                Dim SumaCantidad = 0
+                For Each item In venta.Items
+                    sumaTotal += item.PrecioUnitario
+                    SumaCantidad += item.Cantidad
+
+                Next
+                venta.Total = sumaTotal
+                venta.CantidadTotal = SumaCantidad
+            Next
+            Return ventas
         End Function
 
     End Class
