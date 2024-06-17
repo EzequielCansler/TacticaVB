@@ -1,20 +1,21 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Data
-Imports System.Data.SqlClient
-Imports System.Linq
-Imports System.Text
-Imports System.Threading.Tasks
+﻿Imports System.Data.SqlClient
+Imports System.Configuration
 
 Namespace DAL
     Public Class SqlDBHelper
         Private Tabla As DataTable
-        Private strConexion As SqlConnection = New SqlConnection("Server=DESKTOP-8PE60FU\SQLEXPRESS;Uid=sa;Pwd=sasa;MultipleActiveResultSets=True;Timeout=120; Database=DBTactica;")
-        Private cmd As SqlCommand = New SqlCommand()
+        Private strConexion As SqlConnection
+        Private cmd As SqlCommand
+
+        ' Constructor que inicializa la conexión desde el Web.config
+        Public Sub New()
+            Dim connectionString As String = ConfigurationManager.ConnectionStrings("MiConexion").ConnectionString
+            strConexion = New SqlConnection(connectionString)
+            cmd = New SqlCommand()
+        End Sub
 
         Public Function EjecutarComandoSQL(ByVal strSQLCommand As SqlCommand) As Boolean
             ' INSERT UPDATE DELETE
-
             Dim Res As Boolean = True
             cmd = strSQLCommand
             cmd.Connection = strConexion
@@ -34,6 +35,7 @@ Namespace DAL
             strConexion.Close()
             Return Tabla
         End Function
+
         Public Function EjecutarEscalar(ByVal strSQLCommand As SqlCommand) As Object
             ' Ejecutar comando y devolver resultado escalar
             Dim result As Object = Nothing

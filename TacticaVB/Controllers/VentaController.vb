@@ -25,7 +25,16 @@ Namespace Controllers
             ViewBag.Clientes = clientes
             Return View(ventas)
         End Function
+        Function Detalles(id As Integer)
+            Dim ventasBLL As New ventasBLL()
+            Dim clientesBLL As New ClientesBLL()
 
+            Dim clientes = clientesBLL.BuscarClientePorID(id)
+            Dim venta = ventasBLL.BuscarPorID(id)
+
+            ViewBag.Clientes = clientes
+            Return View(venta)
+        End Function
         Function AgregarVenta(Optional id As Integer? = Nothing) As ActionResult
             Dim productosBLL As New ProductosBLL()
             Dim productos = productosBLL.ListarProductos()

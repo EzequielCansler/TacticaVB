@@ -40,6 +40,9 @@ End Code
                 </td>
                 <td>@venta.Fecha.ToShortDateString()</td>
                 <td>@venta.Total</td>
+                @Using Html.BeginForm("Detalles", "Venta", New With {.id = venta.ID}, FormMethod.Post)
+                    @<td><button type="submit" class="btn btn-primary">Detalles</button></td>
+                End Using
                 @Using Html.BeginForm("AgregarVenta", "Venta", New With {.id = venta.ID}, FormMethod.Post)
                     @<td><button type="submit" class="btn btn-primary">Modificar Venta</button></td>
                 End Using
@@ -52,3 +55,5 @@ End Code
 </table>
 
 <a href="@Url.Action("AgregarVenta", "Venta")" class="btn btn-primary">Agregar Venta</a>
+<a href="@Url.Action("Index", "Home")" class="btn btn-primary">Volver</a>
+

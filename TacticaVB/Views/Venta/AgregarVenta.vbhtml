@@ -65,6 +65,8 @@ End Code
     </table>
 
     <button type="submit" id="submitVenta" class="btn btn-success">Crear Venta</button>
+    <a href="@Url.Action("Index", "Venta")" class="btn btn-primary">Cancelar</a>
+
 </form>
 
 @section Scripts

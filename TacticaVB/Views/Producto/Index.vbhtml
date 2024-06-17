@@ -12,7 +12,7 @@ End Code
         <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ingrese el nombre del producto" value="@Request("nombre")" />
     </div>
     @<div class="form-group">
-         <Label for="categoria">Categoria</Label>
+        <Label for="categoria">Categoria</Label>
         <input type="text" id="categoria" name="categoria" class="form-control" placeholder="Ingrese la categoria del producto" value="@Request("categoria")" />
     </div>
     @<Button type="submit" class="btn btn-primary">Buscar</Button>
@@ -48,3 +48,5 @@ End Using
 </table>
 
 <a href="@Url.Action("ProductoCambioNuevo", "Producto")" class="btn btn-primary">Agregar Producto</a>
+<a href="@Url.Action("Index", "Home")" class="btn btn-primary">Volver</a>
+

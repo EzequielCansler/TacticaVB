@@ -220,6 +220,7 @@
     <Content Include="Views\Producto\ProductoCambioNuevo.vbhtml" />
     <Content Include="Views\Venta\Index.vbhtml" />
     <Content Include="Views\Venta\AgregarVenta.vbhtml" />
+    <Content Include="Views\Venta\Detalles.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

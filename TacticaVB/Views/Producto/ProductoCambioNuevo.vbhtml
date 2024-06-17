@@ -21,3 +21,7 @@ End Code
     </div>
     @<Button type="submit" Class="btn btn-primary">Guardar Producto</Button>
 End Using
+<div>
+
+<a href="@Url.Action("Index", "Producto")" class="btn btn-primary">Cancelar</a>
+</div>

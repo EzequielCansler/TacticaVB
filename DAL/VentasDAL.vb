@@ -31,7 +31,7 @@ Namespace DAL
             Try
 
                 Dim cmdComando As New SqlCommand()
-                If ID IsNot Nothing Then 'si tiene valor se modifica
+                If ID <> 0 Then 'si tiene valor se modifica
                     cmdComando.CommandText = "UPDATE ventas SET Fecha = @Fecha, Total = @Total, IDCliente = @IDCliente WHERE ID = @ID; SELECT @ID"
                     cmdComando.Parameters.AddWithValue("@ID", ID.Value)
                 Else 'sino se crea
